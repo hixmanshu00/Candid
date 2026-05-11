@@ -7,7 +7,7 @@ import { setUserData } from "./redux/userSlice";
 import { ThemeProvider } from "./context/ThemeContext";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
-import Auth from "./pages/auth";
+import Auth from "./pages/Auth";
 import InterviewPage from "./pages/InterviewPage";
 import InterviewHistory from "./pages/InterviewHistory";
 import Pricing from "./pages/Pricing";
@@ -15,7 +15,7 @@ import InterviewReport from "./pages/InterviewReport";
 import Profile from "./pages/Profile";
 import SharedReport from "./pages/SharedReport";
 
-export const ServerUrl = `http://${window.location.hostname}:8000`;
+export const ServerUrl = import.meta.env.VITE_SERVER_URL || `http://${window.location.hostname}:8000`;
 
 function Spinner() {
   return (
