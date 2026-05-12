@@ -3,12 +3,28 @@ import { BsRobot } from "react-icons/bs";
 import { IoSparkles } from "react-icons/io5";
 import { motion } from "motion/react"
 import { FcGoogle } from "react-icons/fc";
-import { signInWithRedirect } from 'firebase/auth';
+import { signInWithPopup } from 'firebase/auth';
 import { auth, provider } from '../utils/firebase';
+import axios from 'axios';
+import { ServerUrl, setAuthToken } from '../App';
+import { useDispatch } from 'react-redux';
+import { setUserData } from '../redux/userSlice';
+import toast from 'react-hot-toast';
+
 function Auth({isModel = false}) {
+    const dispatch = useDispatch();
 
     const handleGoogleAuth = async () => {
-        await signInWithRedirect(auth, provider);
+        try {
+            const response = await signInWithPopup(auth, provider);
+            const { displayName: name, email } = response.user;
+            const result = await axios.post(ServerUrl + "/api/auth/google", { name, email });
+            setAuthToken(result.data.token);
+            dispatch(setUserData(result.data));
+        } catch (error) {
+            console.error(error);
+            toast.error(error?.message || "Sign-in failed. Please try again.");
+        }
     }
   return (
     <div className={`

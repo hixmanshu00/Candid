@@ -5,8 +5,6 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserData } from "./redux/userSlice";
 import { ThemeProvider } from "./context/ThemeContext";
-import { getRedirectResult } from "firebase/auth";
-import { auth } from "./utils/firebase";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import Auth from "./pages/Auth";
@@ -59,20 +57,6 @@ export default function App() {
 
   useEffect(() => {
     const init = async () => {
-      // Handle Google redirect result first
-      try {
-        const redirectResult = await getRedirectResult(auth);
-        if (redirectResult) {
-          const { displayName: name, email } = redirectResult.user;
-          const res = await axios.post(ServerUrl + "/api/auth/google", { name, email });
-          setAuthToken(res.data.token);
-          dispatch(setUserData(res.data));
-          return;
-        }
-      } catch (e) {
-        console.error("Redirect sign-in error:", e);
-      }
-
       // Check existing session via stored token
       try {
         const result = await axios.get(ServerUrl + "/api/user/current-user");
