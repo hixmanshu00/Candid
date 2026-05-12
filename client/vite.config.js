@@ -11,8 +11,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['img1.png'],
       manifest: {
-        name: 'InterviewIQ.AI',
-        short_name: 'InterviewIQ',
+        name: 'Candid',
+        short_name: 'Candid',
         description: 'AI-powered mock interview preparation platform',
         theme_color: '#0d9488',
         background_color: '#f8fafc',
@@ -33,7 +33,7 @@ export default defineConfig({
             handler: 'NetworkOnly',
           },
           {
-            urlPattern: /^http:\/\/localhost:8000\/.*/i,
+            urlPattern: /\/api\/.*/i,
             handler: 'NetworkOnly',
           },
         ],
