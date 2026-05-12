@@ -13,11 +13,11 @@ export const googleAuth = async (req,res) => {
             })
         }
         let token = await genToken(user._id)
-        const isProd = process.env.NODE_ENV === "production";
+        const isHttps = req.secure || req.headers["x-forwarded-proto"] === "https";
         res.cookie("token", token, {
             httpOnly: true,
-            secure: isProd,
-            sameSite: isProd ? "none" : "strict",
+            secure: isHttps,
+            sameSite: isHttps ? "none" : "lax",
             maxAge: 7 * 24 * 60 * 60 * 1000,
         })
 
@@ -33,11 +33,11 @@ export const googleAuth = async (req,res) => {
 
 export const logOut = async (req,res) => {
     try {
-        const isProd = process.env.NODE_ENV === "production";
+        const isHttps = req.secure || req.headers["x-forwarded-proto"] === "https";
         res.clearCookie("token", {
             httpOnly: true,
-            secure: isProd,
-            sameSite: isProd ? "none" : "strict",
+            secure: isHttps,
+            sameSite: isHttps ? "none" : "lax",
         })
         return res.status(200).json({message:"LogOut Successfully"})
     } catch (error) {
