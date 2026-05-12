@@ -17,7 +17,7 @@ import InterviewReport from "./pages/InterviewReport";
 import Profile from "./pages/Profile";
 import SharedReport from "./pages/SharedReport";
 
-export const ServerUrl = import.meta.env.VITE_SERVER_URL || `${window.location.protocol}//${window.location.hostname}:8000`;
+export const ServerUrl = (import.meta.env.VITE_SERVER_URL || `${window.location.protocol}//${window.location.hostname}:8000`).replace(/\/$/, "");
 
 function Spinner() {
   return (
