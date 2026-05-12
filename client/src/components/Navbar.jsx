@@ -9,7 +9,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { ServerUrl } from "../App";
+import { ServerUrl, setAuthToken } from "../App";
 import { setUserData } from "../redux/userSlice";
 import { useTheme } from "../context/ThemeContext";
 import AuthModel from "./AuthModel";
@@ -25,7 +25,8 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     try {
-      await axios.get(ServerUrl + "/api/auth/logout", { withCredentials: true });
+      await axios.get(ServerUrl + "/api/auth/logout");
+      setAuthToken(null);
       dispatch(setUserData(null));
       setShowUserMenu(false);
       navigate("/");

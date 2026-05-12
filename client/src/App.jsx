@@ -19,6 +19,20 @@ import SharedReport from "./pages/SharedReport";
 
 export const ServerUrl = (import.meta.env.VITE_SERVER_URL || `${window.location.protocol}//${window.location.hostname}:8000`).replace(/\/$/, "");
 
+export const setAuthToken = (token) => {
+  if (token) {
+    localStorage.setItem("authToken", token);
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  } else {
+    localStorage.removeItem("authToken");
+    delete axios.defaults.headers.common["Authorization"];
+  }
+};
+
+// Restore token on page load
+const savedToken = localStorage.getItem("authToken");
+if (savedToken) setAuthToken(savedToken);
+
 function Spinner() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 flex items-center justify-center">
@@ -50,11 +64,8 @@ export default function App() {
         const redirectResult = await getRedirectResult(auth);
         if (redirectResult) {
           const { displayName: name, email } = redirectResult.user;
-          const res = await axios.post(
-            ServerUrl + "/api/auth/google",
-            { name, email },
-            { withCredentials: true }
-          );
+          const res = await axios.post(ServerUrl + "/api/auth/google", { name, email });
+          setAuthToken(res.data.token);
           dispatch(setUserData(res.data));
           return;
         }
@@ -62,13 +73,12 @@ export default function App() {
         console.error("Redirect sign-in error:", e);
       }
 
-      // Check existing session
+      // Check existing session via stored token
       try {
-        const result = await axios.get(ServerUrl + "/api/user/current-user", {
-          withCredentials: true,
-        });
+        const result = await axios.get(ServerUrl + "/api/user/current-user");
         dispatch(setUserData(result.data));
       } catch {
+        setAuthToken(null);
         dispatch(setUserData(null));
       }
     };

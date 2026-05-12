@@ -13,15 +13,7 @@ export const googleAuth = async (req,res) => {
             })
         }
         let token = await genToken(user._id)
-        const isHttps = req.secure || req.headers["x-forwarded-proto"] === "https";
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: isHttps,
-            sameSite: isHttps ? "none" : "lax",
-            maxAge: 7 * 24 * 60 * 60 * 1000,
-        })
-
-        return res.status(200).json(user)
+        return res.status(200).json({ ...user.toObject(), token })
 
 
 
@@ -31,17 +23,6 @@ export const googleAuth = async (req,res) => {
     
 }
 
-export const logOut = async (req,res) => {
-    try {
-        const isHttps = req.secure || req.headers["x-forwarded-proto"] === "https";
-        res.clearCookie("token", {
-            httpOnly: true,
-            secure: isHttps,
-            sameSite: isHttps ? "none" : "lax",
-        })
-        return res.status(200).json({message:"LogOut Successfully"})
-    } catch (error) {
-         return res.status(500).json({message:`Logout error ${error}`})
-    }
-    
+export const logOut = async (_req, res) => {
+    return res.status(200).json({ message: "LogOut Successfully" });
 }
